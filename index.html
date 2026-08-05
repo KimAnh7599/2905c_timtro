@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Tìm Trọ 2905C</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- STICKY TOP TOOLBAR -->
+    <div class="sticky-toolbar">
+        <nav class="navbar navbar-dark bg-dark py-2">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand fw-bold" href="#">2905C Tìm trọ</a>
+            </div>
+        </nav>
+        
+        <div class="container-fluid px-4 py-2 bg-light">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="small fw-bold text-muted">Khu vực:</span>
+                    <div class="btn-group btn-group-sm" role="group" id="district-filter-group">
+                        <button type="button" class="btn btn-outline-secondary filter-district-btn active" data-district="Tất cả" id="filter-all-dist">Tất cả (0)</button>
+                        <button type="button" class="btn btn-outline-secondary filter-district-btn" data-district="Cầu Giấy" id="filter-cg">Cầu Giấy (0)</button>
+                        <button type="button" class="btn btn-outline-secondary filter-district-btn" data-district="Nam Từ Liêm" id="filter-ntl">Nam Từ Liêm (0)</button>
+                    </div>
+                    
+                    <span class="small fw-bold text-muted ms-2">Trạng thái:</span>
+                    <select class="form-select form-select-sm w-auto" id="filter-status">
+                        <option value="Tất cả">Tất cả</option>
+                        <option value="Mới.thoáng">Mới.thoáng</option>
+                        <option value="Mới.bí.khépkín">Mới.bí.khépkín</option>
+                        <option value="Cũ.thoáng">Cũ.thoáng</option>
+                        <option value="Cũ.bí.khép kín">Cũ.bí.khép kín</option>
+                        <option value="Đã xem">Đã xem</option>
+                        <option value="Ưng ý">Ưng ý</option>
+                        <option value="Loại">Loại</option>
+                        <option value="Đã cọc">Đã cọc</option>
+                    </select>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-primary btn-sm" id="btn-open-add-modal" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+                        + Thêm phòng trọ mới
+                    </button>
+                    <button type="button" class="btn btn-outline-warning btn-sm fw-bold" id="btn-edit-active">
+                        ✏️ Sửa phòng
+                    </button>
+                    <button type="button" class="btn btn-outline-danger btn-sm fw-bold" id="btn-delete-active">
+                        🗑️ Xóa phòng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container-fluid px-4 py-3" id="app-container">
+        <div class="row g-4 align-items-start">
+            <!-- MÀN HÌNH TRÁI: DANH SÁCH PHÒNG -->
+            <div class="col-12 col-lg-5" id="list-pane">
+                <h5 class="mb-3 text-secondary fw-bold">Danh sách đang chọn lọc</h5>
+                <div id="loading" class="text-center my-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2 text-muted small">Đang đồng bộ từ Server Người đẹp nhất thế giới...</p>
+                </div>
+                <div class="scrollable-pane">
+                    <div id="room-list" class="d-flex flex-column gap-2"></div>
+                    <div id="pagination-controls" class="d-flex align-items-center justify-content-center gap-3 mt-3 py-2 border-top bg-white rounded shadow-sm"></div>
+                </div>
+            </div>
+
+            <!-- MÀN HÌNH PHẢI: CHI TIẾT PHÒNG -->
+            <div class="col-12 col-lg-7" id="detail-pane">
+                <h5 class="mb-3 text-secondary fw-bold">Chi tiết phòng trọ thực tế</h5>
+                <div id="room-detail" class="card shadow-sm p-3 sticky-lg-top bg-white border-2" style="top: 130px; z-index: 10;">
+                    <p class="text-center text-muted my-5">Chọn một phòng ở danh sách bên trái để xem đầy đủ chi tiết.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORM MODAL NHẬP LIỆU -->
+    <div class="modal fade" id="addRoomModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRoomModalLabel">Thêm phòng trọ đang cân nhắc</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-room-form">
+                        <input type="hidden" id="form-room-id">
+                        <input type="hidden" id="form-room-index">
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Giá thuê phòng (k/tháng)</label>
+                                <input type="number" class="form-control" id="form-price" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Khoảng cách (km)</label>
+                                <input type="number" step="0.1" class="form-control" id="form-distance" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Địa chỉ</label>
+                                <input type="text" class="form-control" id="form-address" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Trạng thái</label>
+                                <select class="form-select" id="form-status">
+                                    <option value="Mới.thoáng">Mới.thoáng</option>
+                                    <option value="Mới.bí.khépkín">Mới.bí.khépkín</option>
+                                    <option value="Cũ.thoáng">Cũ.thoáng</option>
+                                    <option value="Cũ.bí.khép kín">Cũ.bí.khép kín</option>
+                                    <option value="Đã xem">Đã xem</option>
+                                    <option value="Ưng ý">Ưng ý</option>
+                                    <option value="Loại">Loại</option>
+                                    <option value="Đã cọc">Đã cọc</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Độ ưu tiên (Hệ thống tính)</label>
+                                <input type="text" class="form-control bg-light" id="form-priority" readonly placeholder="Hệ thống tự chấm điểm...">
+                            </div>
+
+                            <!-- Chi phí thành phần -->
+                            <div class="col-12">
+                                <div class="p-3 bg-light rounded border">
+                                    <h6 class="mb-3 text-secondary">Chi phí dịch vụ thành phần</h6>
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
+                                            <label class="form-label small">Giá điện (k/số)</label>
+                                            <input type="number" step="0.1" class="form-control form-control-sm" id="form-elecPrice">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label small">Ước tính số điện (số)</label>
+                                            <input type="number" class="form-control form-control-sm" id="form-estElec">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label small">Giá nước/người (k)</label>
+                                            <input type="number" class="form-control form-control-sm" id="form-waterPrice">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small">Wifi phòng (k)</label>
+                                            <input type="number" class="form-control form-control-sm" id="form-wifiPrice">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small">Phí dịch vụ/người (k)</label>
+                                            <input type="number" class="form-control form-control-sm" id="form-servicePrice">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                 <label class="form-label">Tổng chi phí dự kiến (k)</label>
+                                 <input type="number" class="form-control bg-light" id="form-totalCost" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                 <label class="form-label">Chia đôi (k/người)</label>
+                                 <input type="number" class="form-control bg-light" id="form-splitCost" readonly>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Thông tin chi tiết phòng</label>
+                                <textarea class="form-control" id="form-details" rows="3"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Liên hệ</label>
+                                <textarea class="form-control" id="form-contact" rows="3"></textarea>
+                            </div>
+
+                            <!-- Upload Image -->
+                            <div class="col-12">
+                                <div class="p-3 rounded border bg-light">
+                                    <h6 class="text-secondary mb-3">Tải ảnh phòng trọ (Tối đa 3 ảnh)</h6>
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
+                                            <label class="form-label small">Ảnh phòng 1</label>
+                                            <input type="file" class="form-control form-control-sm image-file-input" data-target-url="form-image-url-1" data-status-id="upload-status-1">
+                                            <input type="hidden" id="form-image-url-1">
+                                            <div id="upload-status-1" class="small text-muted mt-1">Chưa tải ảnh</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label small">Ảnh phòng 2</label>
+                                            <input type="file" class="form-control form-control-sm image-file-input" data-target-url="form-image-url-2" data-status-id="upload-status-2">
+                                            <input type="hidden" id="form-image-url-2">
+                                            <div id="upload-status-2" class="small text-muted mt-1">Chưa tải ảnh</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label small">Ảnh phòng 3</label>
+                                            <input type="file" class="form-control form-control-sm image-file-input" data-target-url="form-image-url-3" data-status-id="upload-status-3">
+                                            <input type="hidden" id="form-image-url-3">
+                                            <div id="upload-status-3" class="small text-muted mt-1">Chưa tải ảnh</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer px-0 pb-0 mt-3">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-success" id="btn-submit-room">Lưu phòng trọ</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & Main Module -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

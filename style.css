@@ -1,0 +1,160 @@
+body {
+    background-color: #f4f7f6;
+}
+
+/* Trên màn hình Desktop lớn, khóa cuộn trang chính và chia cột cuộn độc lập */
+@media (min-width: 992px) {
+    body {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* Khóa cuộn toàn trang web */
+    }
+
+    .sticky-toolbar {
+        flex-shrink: 0;
+    }
+
+    #app-container {
+        flex-grow: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #app-container > .row {
+        flex-grow: 1;
+        height: 100%;
+    }
+
+    #list-pane {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .scrollable-pane {
+        flex-grow: 1;
+        overflow-y: auto; /* Cột trái tự cuộn độc lập */
+        padding-right: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    #detail-pane {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #room-detail {
+        height: calc(100vh - 160px) !important; /* Đảm bảo chiều cao vừa khít khung nhìn */
+        overflow-y: auto !important; /* Cột chi tiết tự cuộn độc lập */
+        position: static !important; /* Bỏ thuộc tính sticky cũ */
+    }
+}
+
+.scrollable-pane {
+    margin-bottom: 2rem;
+}
+
+.room-list-item {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border-radius: 8px;
+    background-color: #ffffff;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.room-list-item:hover {
+    border-color: #0d6efd !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.room-active {
+    border-color: #0d6efd !important;
+    background-color: rgba(13, 110, 253, 0.05) !important;
+}
+
+.price-text {
+    color: #d93025;
+    font-weight: bold;
+}
+
+.split-price {
+    background: #e6f4ea;
+    color: #137333;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.star-rating {
+    color: #ffc107;
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+
+.dot-indicator {
+    transition: background-color 0.2s;
+}
+
+/* RESPONSIVE TRÊN ĐIỆN THOẠI (Mobile Layout Toggle) */
+@media (max-width: 991.98px) {
+    .scrollable-pane {
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    /* Mặc định trên mobile ẩn màn hình chi tiết bên phải */
+    #detail-pane {
+        display: none;
+    }
+
+    /* Khi kích hoạt chế độ xem chi tiết trên Mobile */
+    .mobile-detail-active #list-pane {
+        display: none !important;
+    }
+
+    .mobile-detail-active #detail-pane {
+        display: block !important;
+    }
+}
+.carousel-img-container {
+    background-color: #1a1a1a;
+    height: 280px !important; /* Khóa cứng chiều cao 280px không cho phép bị sập */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0; /* Thêm dòng này để ngăn Flexbox nén dẹt chiều cao của khung ảnh */
+}
+
+.carousel-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Giữ nguyên tỷ lệ ảnh gốc không bị méo */
+}
+
+.carousel-btn {
+    background: rgba(0, 0, 0, 0.4);
+    border: none;
+    color: #ffffff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: background 0.2s, transform 0.1s;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.carousel-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
