@@ -211,3 +211,9 @@ function updateCarousel() {
         dot.style.backgroundColor = (i === currentImageIndex) ? '#0d6efd' : '#cccccc';
     });
 }
+// Hàm tự động phát hiện liên kết URL và chuyển đổi thành thẻ <a> bấm được
+function formatTextWithLinks(text) {
+    if (!text) return "";
+    const urlPattern = /(\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(urlPattern, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary text-decoration-underline">$1</a>');
+}
