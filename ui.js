@@ -131,7 +131,7 @@ export function renderDetailPane(room, index, onBackToList) {
         <div class="d-flex justify-content-between align-items-start mb-2">
             <div>
                 <h4 class="text-danger mb-1 fw-bold">${room.price}k VNĐ/tháng</h4>
-                <div class="text-muted small">${room.address}</div>
+                <div class="text-muted small">${formatTextWithLinks(room.address)}</div>
             </div>
             <span class="badge ${statusColor} fs-6">${room.status}</span>
         </div>
@@ -172,9 +172,9 @@ export function renderDetailPane(room, index, onBackToList) {
 
         <div class="mb-1">
             <h6 class="fw-bold text-secondary mb-1">Mô tả phòng:</h6>
-            <p class="small text-slate-700 bg-light p-2 border rounded" style="white-space: pre-wrap;">${room.details || 'Không có ghi chú mô tả'}</p>
+            <p class="small text-slate-700 bg-light p-2 border rounded" style="white-space: pre-wrap;">${formatTextWithLinks(room.details) || 'Không có ghi chú mô tả'}</p>
             <h6 class="fw-bold text-secondary mb-1 mt-2">Liên hệ:</h6>
-            <p class="small text-slate-700 bg-light p-2 border rounded" style="white-space: pre-wrap;">${room.contact || 'Không có thông tin liên lạc'}</p>
+            <p class="small text-slate-700 bg-light p-2 border rounded" style="white-space: pre-wrap;">${formatTextWithLinks(room.contact) || 'Không có thông tin liên lạc'}</p>
         </div>
     `;
 
