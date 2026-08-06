@@ -11,7 +11,11 @@ export async function fetchRoomsData() {
 export async function saveRoomData(payload) {
     const response = await fetch(API_URL, {
         method: 'POST',
-        body: JSON.stringify(payload)
+        headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify(payload),
+        redirect: 'follow'
     });
     if (!response.ok) throw new Error("Kết nối API thất bại");
     const result = await response.json();
